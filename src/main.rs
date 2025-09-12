@@ -1176,6 +1176,10 @@ fn resize_window(appstate: *mut c_void) {
 }
 
 fn main() {
+    if cfg!(target_os = "linux") {
+        std::env::set_var("SDL_VIDEODRIVER", "x11");
+    }
+
     // normally SDL_main would generate a main function that would call this for us, but that's kiiiiiiiinda not possible
     unsafe {
         SDL_EnterAppMainCallbacks(
