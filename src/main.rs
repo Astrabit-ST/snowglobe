@@ -5,7 +5,7 @@ use glow::{HasContext, NativeBuffer, UniformLocation, VertexArray};
 use nalgebra::UnitComplex;
 use rand::Rng;
 use rapier2d::prelude::*;
-use sdl3_sys::{surface::SDL_Surface, video::SDL_Window};
+use sdl3_sys::{surface::SDL_Surface, video::SDL_Window, iostream::SDL_IOFromConstMem};
 
 use std::{
     ffi::{c_char, c_int, c_void},
@@ -86,6 +86,8 @@ mod raw_assets {
     }
 
     pub const FLAKE: &[u8] = include_bytes!("assets/flake.png");
+
+    pub const WINDOW_SHAPE: &[u8] = include_bytes!("assets/window_shape.bmp");
 }
 
 pub mod assets {
@@ -747,8 +749,8 @@ extern "C" fn app_init(
     collider_set.insert_with_parent(niko_collider, niko_body_handle, &mut rigid_body_set);
 
     unsafe {
-        let file = c"src/assets/window_shape.bmp".as_ptr();
-        let surface = sdl3_sys::surface::SDL_LoadBMP(file);
+        let stream = sdl3_sys::iostream::SDL_IOFromConstMem(raw_assets::WINDOW_SHAPE.as_ptr() as *const _, raw_assets::WINDOW_SHAPE.len());
+        let surface = sdl3_sys::surface::SDL_LoadBMP_IO(stream, true);
         SDL_SetSurfaceColorKey(surface, true, 0);
         SDL_SetWindowShape(window, surface);
     }
