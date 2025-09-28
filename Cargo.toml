@@ -13,6 +13,9 @@ rapier2d = { version = "0.22.0", features = ["debug-render"] }
 sdl3-sys = "0.0.9"
 rand = "0.8.5"
 
+[target.'cfg(windows)'.dependencies]
+windows = { version = "0.61.3", features = ["Win32_System", "Win32_UI", "Win32_Graphics_Dxgi_Common","Win32_UI_WindowsAndMessaging", "Graphics_DirectX_Direct3D11", "UI_Composition"] }
+
 [build-dependencies]
 cmake = "0.1.51"
 
