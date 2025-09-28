@@ -661,6 +661,7 @@ extern "C" fn app_init(
         )
     };
 
+    #[cfg(target_os = "windows")]
     windows_account_for_swapchain(window);
 
     // initialize glow
