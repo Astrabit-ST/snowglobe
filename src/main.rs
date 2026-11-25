@@ -11,22 +11,6 @@ use std::{
     ffi::{c_char, c_int, c_void}, ops::Mul, ptr, time::{Duration, Instant}
 };
 
-#[cfg(target_os = "windows")]
-fn windows_account_for_swapchain(window: *mut SDL_Window) {
-    use windows::{Win32::UI::WindowsAndMessaging::*, Win32::Foundation::*};
-    
-    let window_props = unsafe { SDL_GetWindowProperties(window) };
-    let hwnd_ptr = unsafe { SDL_GetPointerProperty(window_props, SDL_PROP_WINDOW_WIN32_HWND_POINTER.as_ptr(), std::ptr::null_mut()) };
-    let hwnd = windows::Win32::Foundation::HWND(hwnd_ptr);
-
-    unsafe {
-        let existing_exstyles = GetWindowLongW(hwnd, GWL_EXSTYLE);
-        SetWindowLongW(hwnd, GWL_EXSTYLE, existing_exstyles | WS_EX_LAYERED.0 as i32 | WS_EX_NOREDIRECTIONBITMAP.0 as i32);
-        let _ = SetLayeredWindowAttributes(hwnd, COLORREF(0), 255, LWA_ALPHA);
-    }
-}
-
-
 #[cfg(debug_assertions)]
 struct DebugRenderBackendParams<'a> {
     gl: &'a glow::Context,
@@ -660,9 +644,6 @@ extern "C" fn app_init(
                 | sdl3_sys::video::SDL_WINDOW_UTILITY,
         )
     };
-
-    #[cfg(target_os = "windows")]
-    windows_account_for_swapchain(window);
 
     // initialize glow
     let gl = unsafe {
